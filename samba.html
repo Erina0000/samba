@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>極限・悩みサンバ会場</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            transition: background-color 0.05s;
+        }
+
+        .flash-bg {
+            animation: flashing 0.1s infinite;
+        }
+
+        @keyframes flashing {
+            0% { background-color: #ff0000; }
+            25% { background-color: #00ff00; }
+            50% { background-color: #0000ff; }
+            75% { background-color: #ffff00; }
+            100% { background-color: #ff00ff; }
+        }
+
+        h1 { z-index: 10; color: #fff; text-shadow: 2px 2px #000; }
+        .controls { z-index: 10; text-align: center; }
+
+        input { padding: 10px; font-size: 18px; border-radius: 5px; width: 300px; }
+        button {
+            margin-top: 20px; padding: 15px 30px; font-size: 20px; font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #ffff00, #00ff00);
+            border: none; border-radius: 50px; cursor: pointer;
+        }
+
+        .samba-mode {
+            display: inline-block;
+            margin-top: 50px;
+            font-size: 120px;
+            font-weight: bold;
+            background: linear-gradient(to right, red, orange, yellow, green, aqua, blue, purple);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rotate-samba 0.04s linear infinite, rainbow-flow 0.5s linear infinite;
+        }
+
+
+        <link href="https://fonts.googleapis.com/css2?family=Potta+One&display=swap" rel="stylesheet">
+<style>
+    /* フォントを適用 */
+    .samba-mode {
+        font-family: 'Potta One', system-ui; 
+        animation: 
+            rotate-samba 0.04s linear infinite, 
+            rainbow-flow 0.5s linear infinite,
+            beat-samba 0.5s ease-in-out infinite alternate; /* 拡大縮小 */
+        }
+
+        @keyframes rotate-samba {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* サンバのリズムで拡大・縮小（鼓動） */
+        @keyframes beat-samba {
+            from { transform: rotate(0deg) scale(0.5); }
+            to { transform: rotate(0deg) scale(1.5); }
+        }
+
+        /* 拡大縮小用のクラスを別で作って重ねる */
+        .beat-layer {
+            display: inline-block;
+            animation: beat-samba 0.4s ease-in-out infinite alternate;
+        }
+        @keyframes rainbow-flow { to { background-position: 200% center; } }
+
+        /* 平穏モードの背景とフォント */
+        .peace-bg {
+                background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80'); /* 綺麗な湖のサンプル画像 */
+                background-size: cover;
+                background-position: center;
+                transition: background-image 2s ease-in-out;
+            }
+
+            .peace-text {
+                font-family: 'Shippori Mincho', serif; /* 上品でオシャレな明朝体 */
+                font-size: 40px;
+                color: #fff;
+                text-shadow: 0 0 10px rgba(0,0,0,0.5);
+                animation: fadeIn 3s forwards;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+    </style>
+</head>
+<body>
+
+    <h1>極限・悩みサンバ会場 💃🕺</h1>
+    
+    <div class="controls">
+        <input type="text" id="nayamiInput" placeholder="今、腹立つことは？">
+        <br>
+        <button onclick="startHyperSamba()">サンバで宇宙へ飛ばす！</button>
+    </div>
+
+    <div id="displayArea"></div>
+
+    <audio id="sambaAudio" src="sambasamba.mp3" loop></audio>
+    <audio id="bombAudio" src="bomb.mp3"></audio>
+
+    <script>
+        function startHyperSamba() {
+            const input = document.getElementById('nayamiInput');
+            const display = document.getElementById('displayArea');
+            const audio = document.getElementById('sambaAudio');
+            const bombAudio = document.getElementById('bombAudio');
+            const body = document.body;
+            const controls = document.querySelector('.controls');
+            
+            if (input.value.trim() === "") {
+                alert("悩みを入れないと踊れないワン！");
+                return;
+            }
+    
+            // --- サンバ開始！ ---
+            display.innerHTML = `
+                <div class="beat-layer">
+                    <div class="samba-mode">${input.value}</div>
+                </div>
+            `;
+            body.classList.add('flash-bg');
+            audio.play().catch(e => console.log("再生にはクリックが必要だにゃ"));
+            controls.style.opacity = "0.1";
+    
+            setTimeout(() => {
+                audio.pause();
+                
+                // 1. 爆発音を鳴らして画面を真っ白に！
+                bombAudio.currentTime = 0;
+                bombAudio.play(); 
+                body.classList.remove('flash-bg');
+                body.style.backgroundColor = "white";
+    
+                display.innerHTML = "<h1 id='explosion'>💥 完 全 消 滅 💥</h1>";
+                const expo = document.getElementById('explosion');
+                expo.style.fontSize = "150px";
+                expo.style.transition = "transform 0.5s";
+                setTimeout(() => { expo.style.transform = "scale(3)"; }, 10);
+    
+                // 2. 「オ～レ！」の雨（ループ処理）
+                for (let i = 0; i < 100; i++) {
+                    const ole = document.createElement('div');
+                    ole.innerText = "オ～レ！💃";
+                    ole.style.position = "absolute";
+                    ole.style.left = Math.random() * 100 + "vw";
+                    ole.style.top = "-50px";
+                    ole.style.fontSize = (Math.random() * 30 + 20) + "px";
+                    ole.style.color = ["#ff0000", "#ffea00", "#00ff00"][Math.floor(Math.random() * 3)];
+                    ole.style.zIndex = "100";
+                    
+                    ole.animate([
+                        { transform: 'translateY(0) rotate(0deg)' },
+                        { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)` }
+                    ], {
+                        duration: Math.random() * 2000 + 1000,
+                        easing: 'ease-in'
+                    });
+    
+                    document.body.appendChild(ole);
+                    setTimeout(() => ole.remove(), 3000);
+                } 
+    
+                setTimeout(() => {
+                    const peaceAudio = new Audio('peace.mp3');
+                    peaceAudio.volume = 0.9; 
+                    peaceAudio.play();
+
+                    document.querySelector('h1').style.display = 'none';
+    
+                    // 湖の背景とメッセージへ移行
+                    body.classList.add('peace-bg'); 
+                    display.innerHTML = `
+                    <div class="peace-text" style="text-align: center;"> 悩みは光に包まれ、静かな湖へと還りました。
+                    </div>
+                    <button onclick="location.reload()" style="
+                        display: block; 
+                        margin: 40px auto; 
+                        padding: 10px 20px; 
+                        font-family: 'Shippori Mincho', serif; 
+                        cursor: pointer;
+                        opacity: 0.8;
+                    ">
+                        もう一度、踊る
+                    </button>
+                `;
+                controls.style.display = "none";
+                }, 3000); // 爆発から3秒待機
+    
+            }, 3000); // 3秒後に発動！
+        }
+    </script>
+</body>
+</html>
